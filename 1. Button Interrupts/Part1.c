@@ -36,10 +36,17 @@ int main(void)
     while(1)
     {
         if (LED_Color)
+        {
             P1OUT ^= BIT0;                  // P1.0 = toggle
+
+        }
         else
-            P6OUT &= ~BIT6;                 // Set P1.0 to 0
+        {
+            P6OUT ^= BIT6;                 // Set P1.0 to 0
+
+        }
         __delay_cycles(100000);
+
     }
 }
 
@@ -80,18 +87,23 @@ __interrupt void Port_2(void)
 {
     P2IFG &= ~BIT3;                         // Clear P1.3 IFG
 
-    if (risingEdge)       // @TODO Fill in this argument within the If statement to check if the interrupt was triggered off a rising edge.
+    if (P2IES & BIT3)       // @TODO Fill in this argument within the If statement to check if the interrupt was triggered off a rising edge.
     {
         LED_Color = 0;
         // @TODO Add code to change which edge the interrupt should be looking for next
-        P6OUT &= ~BIT6;
+
+        P1OUT &= ~BIT0;           // turning off P1.0
+        P2IES &= ~BIT3;           // switching to the falling edge
     }
 
-    else if (fallingEdge) // @TODO Fill in this argument within the If statement to check if the interrupt was triggered off a falling edge.
+    else // @TODO Fill in this argument within the If statement to check if the interrupt was triggered off a falling edge.
     {
         LED_Color = 1;
         // @TODO Add code to change which edge the interrupt should be looking for next
-        P1OUT &= ~BIT0;
+
+        P6OUT &= ~BIT6;           // turning off P6.6
+        P2IES |= BIT3;            // switching to the rising edge
+
     }
 }
 
