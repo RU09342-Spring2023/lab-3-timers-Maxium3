@@ -30,15 +30,20 @@ void main(){
 
 void gpioInit(){
     // @TODO Initialize the Red or Green LED
-
+    P1DIR &= ~BIT0;
     // @TODO Initialize Button 2.3
-
+    P2DIR &= ~BIT3;
 
 }
 
 void timerInit(){
     // @TODO Initialize Timer B1 in Continuous Mode using ACLK as the source CLK with Interrupts turned on
 
+        TB1CCTL0 = CCIE;                          // TBCCR0 interrupt enabled
+        TB1CCR0 = 50000;
+        TB1CTL = TBSSEL_1 | MC_2;                 // ACLK, continuous mode
+
+        __bis_SR_register(LPM3_bits | GIE);       // Enter LPM3 w/ interrupt
 }
 
 
